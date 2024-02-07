@@ -1,3 +1,8 @@
+function is_digit(c)
+{
+  return /^\d+$/.test(c);
+};
+
 function precedence(op)
 {
 
@@ -36,7 +41,7 @@ function precedence(op)
     let ops = [];
   let i = 0;
 
-  while (i < len(tokens))
+  while (i < tokens.length)
   {
 
     // Current token is a whitespace,
@@ -51,23 +56,23 @@ function precedence(op)
     // brace, push it to 'ops'
     else if (tokens[i] == '(')
       {
-        ops.append(tokens[i]);
+        ops.push(tokens[i]);
       }
 
       // Current token is a number, push 
       // it to stack for numbers.
-      else if (tokens[i].isdigit())
+      else if (is_digit(tokens[i]))
       {
         let val = 0;
 
         // There may be more than one
         // digits in the number.
-          while (i < len(tokens) && tokens[i].isdigit())
+          while (i < tokens.length && is_digit(tokens[i]))
         {
-          val = (val * 10) + int(tokens[i]);
+          val = (val * 10) + parseInt(tokens[i]);
           i += 1;
         }
-        values.append(val);
+        values.push(val);
 
         // right now the i points to 
         // the character next to the digit,
@@ -83,13 +88,13 @@ function precedence(op)
       // solve entire brace.
       else if (tokens[i] == ')')
     {
-      while (len(ops) != 0 && ops[-1] != '(')
+      while (ops.length != 0 && ops[-1] != '(')
         {
           let val2 = values.pop();
           let val1 = values.pop();
           let op = ops.pop();
 
-          values.append(applyOp(val1, val2, op));
+          values.push(applyOp(val1, val2, op));
         }
 
         // pop opening brace.
@@ -104,18 +109,18 @@ function precedence(op)
       // token, which is an operator. 
         // Apply operator on top of 'ops' 
       // to top two elements in values stack.
-        while (len(ops) != 0 && precedence(ops[-1]) >= precedence(tokens[i]))
+        while (ops.length != 0 && precedence(ops[-1]) >= precedence(tokens[i]))
       {
 
         let val2 = values.pop();
         let val1 = values.pop();
         let op = ops.pop();
 
-        values.append(applyOp(val1, val2, op));
+        values.push(applyOp(val1, val2, op));
       }
 
       // Push current token to 'ops'.
-        ops.append(tokens[i]);
+        ops.push(tokens[i]);
     }
     i += 1;
   }
@@ -123,13 +128,13 @@ function precedence(op)
   // Entire expression has been parsed 
   // at this point, apply remaining ops 
   // to remaining values.
-    while (len(ops) != 0)
+    while (ops.length != 0)
   {
     let val2 = values.pop();
     let val1 = values.pop();
     let op = ops.pop();
 
-    values.append(applyOp(val1, val2, op));
+    values.push(applyOp(val1, val2, op));
   }
   // Top of 'values' contains result,
     // return it.
